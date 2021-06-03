@@ -1,0 +1,386 @@
+[
+	{
+		"id": "000",
+
+		"name": "Root",
+		"description": "Root node",
+		"node_type": "ROOT",
+
+		"entryFile": "",
+		"entryFunc": "",
+
+		"requires": [],
+		"inquires": [],
+		"inputs": [],
+		"outputs": [],
+
+		"isInputNode": false,
+		"isOutputNode": true,
+		"nextNode": ["001"]
+	},
+
+	{
+		"id": "001",
+
+		"name": "Read img",
+		"description": "Read and threshhold image from path",
+		"node_type": "SCRIPT",
+
+		"entryFile": "read_img.py",
+		"entry": "read_img",
+
+		"requires": [],
+		"inquires": [],
+		"inputs": [
+			{
+				"name": "img",
+				"type": "string",
+				"required": true,
+				"default": null,
+				"sourceNode": null,
+				"sourceName": ""
+			}
+		],
+		"outputs": [
+			{ "name": "img_original", "type": "Image" },
+			{ "name": "img", "type": "Image" }
+		],
+
+		"isInputNode": true,
+		"isOutputNode": true,
+		"nextNode": ["002"]
+	},
+
+	{
+		"id": "002",
+
+		"name": "Clean img",
+		"description": "Clean image noise",
+		"node_type": "SCRIPT",
+
+		"entryFile": "clean_img.py",
+		"entry": "clean_img",
+
+		"requires": [],
+		"inquires": [],
+		"inputs": [
+			{
+				"name": "img",
+				"type": "string",
+				"required": true,
+				"default": null,
+				"sourceNode": "001",
+				"sourceName": "img"
+			},
+			{
+				"name": "kernel_size",
+				"type": "int",
+				"required": false,
+				"default": 5,
+				"sourceNode": null,
+				"sourceName": null
+			},
+			{
+				"name": "iterations",
+				"type": "int",
+				"required": false,
+				"default": 5,
+				"sourceNode": null,
+				"sourceName": null
+			}
+		],
+		"outputs": [{ "name": "img", "type": "Image" }],
+
+		"isInputNode": true,
+		"isOutputNode": true,
+		"nextNode": ["003"]
+	},
+
+	{
+		"id": "003",
+
+		"name": "Generate regions",
+		"description": "Generate rooms and regions vector data with simplification",
+		"node_type": "SCRIPT",
+
+		"entryFile": "generate_regions.py",
+		"entry": "generate_regions",
+
+		"requires": [],
+		"inquires": [],
+		"inputs": [
+			{
+				"name": "img",
+				"type": "string",
+				"required": true,
+				"default": null,
+				"sourceNode": "002",
+				"sourceName": "img"
+			},
+			{
+				"name": "epsilon",
+				"type": "float",
+				"required": false,
+				"default": 0.001,
+				"sourceNode": null,
+				"sourceName": null
+			}
+		],
+		"outputs": [
+			{ "name": "img", "type": "Image" },
+			{ "name": "ctr", "type": "List" },
+			{ "name": "classes_dict", "type": "Dict" },
+			{ "name": "regions", "type": "List" },
+			{ "name": "rooms", "type": "List" }
+		],
+
+		"isInputNode": true,
+		"isOutputNode": true,
+		"nextNode": ["004", "005", "006", "008"]
+	},
+
+	{
+		"id": "004",
+
+		"name": "Visualize 1",
+		"description": "Visualize data",
+		"node_type": "SCRIPT",
+
+		"entryFile": "viz1.py",
+		"entry": "viz1",
+
+		"requires": [],
+		"inquires": [],
+		"inputs": [
+			{
+				"name": "img",
+				"type": "Image",
+				"required": true,
+				"default": null,
+				"sourceNode": "001",
+				"sourceName": "img_original"
+			},
+			{
+				"name": "img_th",
+				"type": "Image",
+				"required": true,
+				"default": null,
+				"sourceNode": "001",
+				"sourceName": "img"
+			},
+			{
+				"name": "img_cleaned",
+				"type": "Image",
+				"required": true,
+				"default": null,
+				"sourceNode": "003",
+				"sourceName": "img"
+			}
+		],
+		"outputs": [],
+
+		"isInputNode": true,
+		"isOutputNode": false,
+		"nextNode": []
+	},
+
+	{
+		"id": "005",
+
+		"name": "Visualize 2",
+		"description": "Visualize data",
+		"node_type": "SCRIPT",
+
+		"entryFile": "viz2.py",
+		"entry": "viz2",
+
+		"requires": [],
+		"inquires": [],
+		"inputs": [
+			{
+				"name": "img",
+				"type": "Image",
+				"required": true,
+				"default": null,
+				"sourceNode": "003",
+				"sourceName": "img"
+			},
+			{
+				"name": "regions",
+				"type": "List",
+				"required": true,
+				"default": null,
+				"sourceNode": "003",
+				"sourceName": "regions"
+			},
+			{
+				"name": "rooms",
+				"type": "List",
+				"required": true,
+				"default": null,
+				"sourceNode": "003",
+				"sourceName": "rooms"
+			},
+			{
+				"name": "all_ctrs",
+				"type": "List",
+				"required": true,
+				"default": null,
+				"sourceNode": "003",
+				"sourceName": "ctr"
+			}
+		],
+		"outputs": [],
+
+		"isInputNode": true,
+		"isOutputNode": false,
+		"nextNode": []
+	},
+
+	{
+		"id": "006",
+
+		"name": "Visualize 3",
+		"description": "Visualize data",
+		"node_type": "SCRIPT",
+
+		"entryFile": "viz3.py",
+		"entry": "viz3",
+
+		"requires": [],
+		"inquires": [],
+		"inputs": [
+			{
+				"name": "img",
+				"type": "Image",
+				"required": true,
+				"default": null,
+				"sourceNode": "003",
+				"sourceName": "img"
+			},
+			{
+				"name": "regions",
+				"type": "List",
+				"required": true,
+				"default": null,
+				"sourceNode": "003",
+				"sourceName": "regions"
+			},
+			{
+				"name": "rooms",
+				"type": "List",
+				"required": true,
+				"default": null,
+				"sourceNode": "003",
+				"sourceName": "rooms"
+			}
+		],
+		"outputs": [
+			{ "name": "all_regions_img", "type": "Image" },
+			{ "name": "regions_img", "type": "Image" },
+			{ "name": "rooms_img", "type": "Image" }
+		],
+
+		"isInputNode": true,
+		"isOutputNode": false,
+		"nextNode": ["007"]
+	},
+
+	{
+		"id": "007",
+
+		"name": "houghliness",
+		"description": "Useless Test",
+		"node_type": "SCRIPT",
+
+		"entryFile": "houghlines.py",
+		"entry": "houghlines",
+
+		"requires": [],
+		"inquires": [],
+		"inputs": [
+			{
+				"name": "regions_img",
+				"type": "Image",
+				"required": true,
+				"default": null,
+				"sourceNode": "006",
+				"sourceName": "regions_img"
+			},
+			{
+				"name": "rooms_img",
+				"type": "Image",
+				"required": true,
+				"default": null,
+				"sourceNode": "006",
+				"sourceName": "rooms_img"
+			}
+		],
+		"outputs": [],
+
+		"isInputNode": true,
+		"isOutputNode": false,
+		"nextNode": []
+	},
+
+	{
+		"id": "008",
+
+		"name": "houghliness",
+		"description": "Useless Test",
+		"node_type": "SCRIPT",
+
+		"entryFile": "generate_rooms.py",
+		"entry": "generate_rooms",
+
+		"requires": [],
+		"inquires": [],
+		"inputs": [
+			{
+				"name": "regions",
+				"type": "List",
+				"required": true,
+				"default": null,
+				"sourceNode": "003",
+				"sourceName": "regions"
+			},
+			{
+				"name": "rooms",
+				"type": "List",
+				"required": true,
+				"default": null,
+				"sourceNode": "003",
+				"sourceName": "rooms"
+			},
+			{
+				"name": "isSegment",
+				"type": "boolean",
+				"required": false,
+				"default": false,
+				"sourceNode": null,
+				"sourceName": null
+			},
+			{
+				"name": "iterations",
+				"type": "int",
+				"required": false,
+				"default": 20,
+				"sourceNode": null,
+				"sourceName": null
+			},
+			{
+				"name": "scale_factor",
+				"type": "float",
+				"required": false,
+				"default": 1.01,
+				"sourceNode": null,
+				"sourceName": null
+			}
+		],
+		"outputs": [{ "name": "final_rooms", "type": "List" }],
+
+		"isInputNode": true,
+		"isOutputNode": false,
+		"nextNode": []
+	}
+]
