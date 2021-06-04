@@ -1,0 +1,3 @@
+process=nested:python3 in/flow/json-frontend.py < in/nodes.json > out/plan && mkdir out/files && cp -R in/flow out/files
+in/flow/=file:flow/
+in/nodes.json=file:flow/nodes.json
